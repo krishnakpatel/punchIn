@@ -1,0 +1,29 @@
+<div>
+    <md-card class="login" ng-show="!home" flex>
+        <form class="login_form" name="login" layout="column">
+        <md-input-container>
+            <label>Employee ID</label>
+            <input name="e_id" ng-model="main.employee_id" required>
+            <div ng-messages="login.e_id.$error">
+                <div ng-message="required">This is required!</div>
+            </div>
+        </md-input-container>
+        <md-input-container>
+            <label>Password</label>
+            <input type="password" name="login_password" ng-model="password" required>
+            <div ng-messages="login.login_password.$error">
+                <div ng-message="required">This is required!</div>
+            </div>
+        </md-input-container>
+        </form>
+        <div class="login_buttons" layout="center">
+            <md-button class="md-raised" ng-click="submit()">Log In</md-button>
+        </div>
+        <div class="error_message">{{error}}</div>
+    </md-card>
+    <div ng-show="home" ng-click=navLogin() layout-fill>
+        <div class="greeting">Hello</div>
+        <div class="date-display">{{date_time}}</div>
+        <div class="directions">click anywhere to login</div>
+    </div>
+</div>

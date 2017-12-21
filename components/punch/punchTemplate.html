@@ -1,0 +1,40 @@
+<div>
+    <md-card>
+        <md-card-content>
+            <div class="message">{{message}}</div>
+            <md-card-actions>
+                <md-button class="md-raised" ng-show="can_punchin && !forgot" ng-click="punch_in()">Punch In</md-button>
+                <md-button class="md-raised" ng-show="!can_punchin && !forgot" ng-click="punch_out()">Punch Out</md-button>
+                <md-button class="md-raised"ng-show="main.admin" ng-click="to_admin()">Admin Settings</md-button>
+            </md-card-actions>
+            <div layout="row">
+                <md-menu md-offset="0 -7">
+                    <md-button ng-click="$mdMenu.open($event)">
+                        Report a Problem
+                    </md-button>
+                    <md-menu-content width="6">
+                        <md-menu-item ng-repeat="item in problem_options">
+                            <md-button ng-click="problem_click($index)"> <span md-menu-align-target>{{item}}</span></md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+                <form name="forgot_punches">
+                <md-datepicker ng-show="forgot_out || forgot_in" ng-model="date_forgot" md-placeholder="Date of Punch"
+          md-min-date="min_date" md-max-date="max_date" md-date-filter="date_filter" ng-change="possible_vs()"></md-datepicker>
+                <md-input-container ng-show="forgot_out || forgot_in" md-is-locked-open="true">
+                    <label>Incorrect Punch Time</label>
+                    <md-select name="punch_time" ng-model="selected_incorrect_time" md-selected-text="selected_incorrect_time" required>
+                        <md-option value="I have not punched out/in yet"><em>I have not punched out/in yet</em></md-option>
+                        <md-option ng-repeat="time in possible_times track by $index">
+                            {{time}}
+                        </md-option>
+                    </md-select>
+                    <div class="error" ng-messages="forgot_punches.punch_time.$error">
+                        <div ng-message="required">This is required!</div>
+                    </div>
+                </md-input-container>
+                </form>
+            </div>
+        </md-card-content>
+    </md-card>
+</div>
