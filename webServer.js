@@ -67,7 +67,6 @@ var database = new DB(dbConnection);
 var tables; 
 
 
-//fix usage of promises, is incorrect rn
 
 database.query("CREATE DATABASE IF NOT EXISTS db").then((success) => {
     console.log(success);
