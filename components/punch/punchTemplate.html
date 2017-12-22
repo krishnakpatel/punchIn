@@ -18,14 +18,15 @@
                         </md-menu-item>
                     </md-menu-content>
                 </md-menu>
-                <form name="forgot_punches">
-                <md-datepicker ng-show="forgot_out || forgot_in" ng-model="date_forgot" md-placeholder="Date of Punch"
-          md-min-date="min_date" md-max-date="max_date" md-date-filter="date_filter" ng-change="possible_vs()"></md-datepicker>
-                <md-input-container ng-show="forgot_out || forgot_in" md-is-locked-open="true">
-                    <label>Incorrect Punch Time</label>
+                <form name="forgot_punches" ng-show="forgot_out || forgot_in">
+                <md-datepicker ng-model="date_forgot" md-placeholder="Date of Punch" md-min-date="min_date" md-max-date="max_date" md-date-filter="date_filter" ng-change="possible_vs()"></md-datepicker>
+                <label for="exampleInput">Time you should have punched:</label>
+                <input type="time" id="exampleInput" name="input" ng-model="time.value" placeholder="HH:mm:ss" min="08:00:00" max="17:30:00" required ng-change="time_select()"/>
+                <md-input-container md-is-locked-open="true">
+                    <label>Selected Incorrect Punch Time</label>
                     <md-select name="punch_time" ng-model="selected_incorrect_time" md-selected-text="selected_incorrect_time" required>
                         <md-option value="I have not punched out/in yet"><em>I have not punched out/in yet</em></md-option>
-                        <md-option ng-repeat="time in possible_times track by $index">
+                        <md-option ng-repeat="time in possible_times track by $index" value="{{time}}">
                             {{time}}
                         </md-option>
                     </md-select>
@@ -33,6 +34,44 @@
                         <div ng-message="required">This is required!</div>
                     </div>
                 </md-input-container>
+                <md-button class="md-raised" ng-click="submit_punch_req()">Submit Request</md-button>
+                </form>
+                <form name="extend" ng-show="extend_hours">
+                    <md-datepicker ng-model="date_forgot" md-placeholder="Date of Punch" md-min-date="min_date" md-max-date="max_date" md-date-filter="date_filter" ng-change="possible_vs()"></md-datepicker>
+                    <md-input-container>
+                        <label>Punch In Time</label>
+                        <md-select name="punch_time" ng-model="selected_incorrect_time" md-selected-text="selected_incorrect_time" required>
+                            <md-option ng-repeat="time in possible_times track by $index" value="{{time}}">
+                                {{time}}
+                            </md-option>
+                        </md-select>
+                        <div class="error" ng-messages="extend.punch_time.$error">
+                            <div ng-message="required">This is required!</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container layout-fill>
+                        <label>Note to the Administrator </label>
+                        <input name="note" ng-model="note_to_admin" required/>
+                        <div class="error" ng-messages="extend.note.$error">
+                            <div ng-message="required">This is required!</div>
+                        </div>
+                    </md-input-container>
+                    <md-button class="md-raised" ng-click="submit_note_req()">Submit Request</md-button>
+                </form>
+                <form name="vacation" ng-show="paid_vacation">
+                    <md-datepicker ng-model="date_forgot" md-placeholder="Date of Punch" md-min-date="min_date"  md-date-filter="date_filter"></md-datepicker>
+                    <md-input-container>
+                        <label>Hours of Paid Vacation</label>
+                        <md-select name="vacation_time" ng-model="selected_incorrect_time" md-selected-text="selected_incorrect_time" required>
+                            <md-option ng-repeat="time in v_times" value="{{time}}">
+                                {{time}}
+                            </md-option>
+                        </md-select>
+                        <div class="error" ng-messages="vacation.vacation_time.$error">
+                            <div ng-message="required">This is required!</div>
+                        </div>
+                    </md-input-container>
+                    <md-button class="md-raised" ng-click="submit_vac_req()">Submit Request</md-button>
                 </form>
             </div>
         </md-card-content>

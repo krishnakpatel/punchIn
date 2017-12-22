@@ -79,6 +79,8 @@ database.query("CREATE DATABASE IF NOT EXISTS db").then((success) => {
     tables.query("CREATE TABLE IF NOT EXISTS employees (id int NOT NULL, first_name VARCHAR(255), last_name VARCHAR(255), password VARCHAR(255), department int, start_time TIME, vacations TIME, used_vacations TIME, active int, hire_date DATE, termination_date DATE, UNIQUE(id))");
 
     tables.query("CREATE TABLE IF NOT EXISTS punches (employee_id int NOT NULL, time TIMESTAMP)");
+    
+    tables.query("CREATE TABLE IF NOT EXISTS modifications (admin_id int, time_modified TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP, employee_id int, time_reported DATETIME, issue VARCHAR(255), correct_date DATETIME, punch_in_punches DATETIME, date DATE, hours TIME, note VARCHAR(255), actions VARCHAR(255), mods VARCHAR(225))");
 
 }).then((success) => {
     tables.query("REPLACE INTO admin (id) VALUES (10)");
@@ -86,6 +88,7 @@ database.query("CREATE DATABASE IF NOT EXISTS db").then((success) => {
     tables.query("REPLACE INTO employees (id, first_name, last_name, password, department, start_time, vacations, used_vacations, active, hire_date, termination_date) VALUES (10, 'john', 'smith', 'hello', 1, '8:00:00', '80:00:00', '36:00:00', 1, '1997-01-10', NULL)");
     
     tables.query("REPLACE INTO punches (employee_id, time) VALUES (10, '2017-12-20 8:00:00')");
+    
 });
 
 /*
@@ -94,7 +97,7 @@ database.query("CREATE DATABASE IF NOT EXISTS db").then((success) => {
 app.post('/login', function (request, response) {
     var id = request.body.id;
     var password = request.body.password;
-    var query = "SELECT first_name FROM employees WHERE id=" + id + " AND password='" + password + "'";
+    var query = "SELECT first_name, start_time, vacations, used_vacations FROM employees WHERE id=" + id + " AND password='" + password + "'";
     var connection = mysql.createConnection(tablesConnection);
     connection.query(query, function(err, rows){
         connection.end();
@@ -221,6 +224,60 @@ app.get('/lastPunch/:user_id', function(request, response){
     });
 });
 
+/*
+ * URL - /addPunchProblem/:user_id - adds a punch problem reported by user to modifications
+ */
+app.post('/addPunchProblem/:user_id', function(request, response){
+    var id = request.params.user_id;
+    var issue = request.body.issue;
+    var incorrect_entry = request.body.incorrect_entry;
+    var correct_entry = request.body.correct_entry;
+    var query = "INSERT INTO modifications (employee_id, time_reported, issue, correct_date, punch_in_punches) VALUES (" + id.toString() + ", NOW(), '" + issue + "', '"+ correct_entry + "', '" + incorrect_entry + "')";
+    var connection = mysql.createConnection(tablesConnection);
+    connection.query(query, function(err, rows){
+        connection.end();
+        if(err){
+            console.log(err);
+            response.status(500).send(JSON.stringify(err));
+        }
+        response.status(200).send('a');
+    });
+});
+
+/*
+ * URL - /noteOnEarlyPunch/:user_id - adds a note, punch problem 
+ */
+app.post('/noteOnEarlyPunch/:user_id', function(request, response){
+    var id = request.params.user_id;
+    var issue = request.body.issue;
+    var incorrect_entry = request.body.entry_in_db;
+    var correct_entry = request.body.start_time_punch;
+    var note = request.body.note;
+    var query = "INSERT INTO modifications (employee_id, time_reported, issue, correct_date, punch_in_punches, note) VALUES (" + id.toString() + ", NOW(), '" + issue + "', '"+ correct_entry + "', '" + incorrect_entry + "', '" + note + "')";
+    var connection = mysql.createConnection(tablesConnection);
+    connection.query(query, function(err, rows){
+        connection.end();
+        if(err){
+            console.log(err);
+            response.status(500).send(JSON.stringify(err));
+        }
+        response.status(200).send('a');
+    });
+});
+
+/*
+ * URL - /vacationRequest/:user_id - submits a vacation request
+ */
+app.post('/vacationRequest/:user_id', function(request, response){
+    var id = request.params.user_id;
+    var body = request.body;
+    
+    
+    date: problem.date, hours: problem.hours, used: $scope.main.used_vacation_time, vacation: $scope.main.vacation_time
+    
+    //autoreject vacation request if vacation time will be exceeded
+    
+});
 
 
 var server = app.listen(3000, '0.0.0.0',function () {

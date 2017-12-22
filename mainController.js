@@ -34,7 +34,11 @@ punchIn.controller('MainController', ['$scope', '$resource', '$rootScope', '$loc
         $scope.main.admin = false;
         $scope.main.logged_in = false;
         $scope.main.employee_id = '';
-        $scope.main.employee = {};  
+        $scope.main.start_time = '';
+        $scope.main.employee = '';
+        $scope.main.vacation_time = '';
+        $scope.main.used_vacation_time = '';
+              
         
         $rootScope.$on("$routeChangeStart", function(event, next, current) {
             if(!$scope.main.logged_in){

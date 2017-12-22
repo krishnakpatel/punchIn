@@ -37,6 +37,9 @@ punchIn.controller('loginController', ['$scope', '$resource', '$location',
           Login.save({id: $scope.main.employee_id, password: $scope.password}, function(user){
               
               $scope.main.employee = user.first_name;
+              $scope.main.start_time = user.start_time;
+              $scope.main.vacation_time = user.vacations;
+              $scope.main.used_vacation_time = user.used_vacations;
               
               //if found, set logged in & navigate to punch
               $scope.main.logged_in = true;
