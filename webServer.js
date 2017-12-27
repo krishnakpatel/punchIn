@@ -270,12 +270,17 @@ app.post('/noteOnEarlyPunch/:user_id', function(request, response){
 app.post('/vacationRequest/:user_id', function(request, response){
     var id = request.params.user_id;
     var body = request.body;
-    
-    
-    date: problem.date, hours: problem.hours, used: $scope.main.used_vacation_time, vacation: $scope.main.vacation_time
-    
-    //autoreject vacation request if vacation time will be exceeded
-    
+    var query = "INSERT INTO modifications (employee_id, time_reported, issue, date, hours) VALUES (" + id.toString() + ", NOW(), '" + body.issue + "', '" + body.date + "', '" + body.hours + "')";    
+    //don't autoreject vacation request if vacation time will be exceeded
+    var connection = mysql.createConnection(tablesConnection);
+    connection.query(query, function(err, rows){
+        connection.end();
+        if(err){
+            console.log(err);
+            response.status(500).send(JSON.stringify(err));
+        }
+        response.status(200).send('a');
+    });
 });
 
 

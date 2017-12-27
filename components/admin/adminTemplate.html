@@ -1,0 +1,16 @@
+<div>
+    <md-card>
+        <md-card-content>
+            <div class="message">{{message}}</div>
+            <md-card-actions>
+                <md-button class="md-raised" ng-show="!can_punchin && !forgot" ng-click="punch_out()">Punch Out</md-button>
+                <md-button class="md-raised"ng-show="main.admin" ng-click="to_admin()">Admin Settings</md-button>
+                <md-virtual-repeat-container id="vertical-container">
+                    <div md-virtual-repeat="item in ctrl.infiniteItems" md-on-demand class="repeated-item" flex>
+                        {{item}}
+                    </div>
+                </md-virtual-repeat-container>
+            </md-card-actions>
+        </md-card-content>
+    </md-card>
+</div>
