@@ -2,15 +2,22 @@
     <md-card>
         <md-card-content>
             <div class="message">{{message}}</div>
-            <md-card-actions>
-                <md-button class="md-raised" ng-show="!can_punchin && !forgot" ng-click="punch_out()">Punch Out</md-button>
-                <md-button class="md-raised"ng-show="main.admin" ng-click="to_admin()">Admin Settings</md-button>
-                <md-virtual-repeat-container id="vertical-container">
-                    <div md-virtual-repeat="item in ctrl.infiniteItems" md-on-demand class="repeated-item" flex>
-                        {{item}}
+            <md-list flex>
+                <md-list-item class="md-long-text" ng-repeat="problem in unresolved" ng-click="null">
+                    <div class="md-list-item-text" layout="column">
+                        <h3>{{problem.name}}{{problem.space}}{{problem.issue}}</h3>
+                        <h4>{{problem.name}}{{problem.description}}</h4>
+                        <p>{{problem.note}}</p>
                     </div>
-                </md-virtual-repeat-container>
-            </md-card-actions>
+                    <md-list-actions>
+                        <md-button ng-show="problem.ar" class="md-raised" ng-click="accept($index)">Accept Request</md-button>
+                        <md-button ng-show="problem.ar" class="md-raised" ng-click="reject($index)">Reject Request</md-button>
+                        <md-button ng-show="problem.mod" class="md-raised" ng-click="modal($event, $index)">Modify</md-button>
+                        <md-button ng-show="!problem.mod" class="md-raised" ng-click=reject($index)>Allow</md-button>
+                        <md-button ng-show="!problem.mod" class="md-raised" ng-click="accept($index)">Reject</md-button>
+                    </md-list-actions>
+                </md-list-item>
+                </md-list>
         </md-card-content>
     </md-card>
 </div>

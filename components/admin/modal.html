@@ -1,0 +1,17 @@
+<div>
+    <md-dialog>
+        <md-dialog-content>
+            {{message}}
+            <div ng-show="time">
+                Select the Replacement Punch Time:
+                <input type="time" name="input" ng-model="selected_time.value" placeholder="HH:mm:ss" min="08:00:00" max="17:30:00"/>
+            </div>
+            <div ng-show="vacation">
+                datepicker
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions>
+            <md-button ng-click="submit()">Submit</md-button>
+        </md-dialog-actions>
+    </md-dialog>
+</div>

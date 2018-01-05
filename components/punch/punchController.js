@@ -13,20 +13,20 @@ punchIn.controller('punchController', ['$scope', '$resource', '$location',
       $scope.forgot = false;
       
       var Admin = $resource('/admin/:user_id', {user_id: $scope.main.employee_id});
-      var Punches = $resource('/punches/:user_id/:start', {user_id: $scope.main.employee_id, start:'@start'});
+      var Punches = $resource('/punches/:user_id/', {user_id: $scope.main.employee_id});
       var Last = $resource('/lastPunch/:user_id', {user_id: $scope.main.employee_id})
       
       var set_buttons = function(){  
           //set can punch in 
           var now = new Date(Date.now());
           var start_date = now.getFullYear().toString() + "-" + (now.getMonth()+1).toString() + "-" + now.getDate().toString() + " 00:00:00";
-          Punches.get({start: start_date}, function(punch){
-              if(punch.count%2 === 0){
+          Punches.get({}, function(punch){
+              if(punch.punched_in === 0){
                   $scope.can_punchin = true;
               }else{
                 //make sure user has punched out the past 8 hours
                 Last.get({}, function(last){
-                        var last_time = new Date(last.time);
+                        var last_time = new Date(last.last_punch);
                         
                         //force employee to report forgotten punch out
                         if(Math.abs(last_time.getHours() - now.getHours()) >= 6){
@@ -208,7 +208,7 @@ punchIn.controller('punchController', ['$scope', '$resource', '$location',
           if ($scope.selected_incorrect_time === 'I have not punched out/in yet'){
               Punch.save({}, function(punchTime){
                   var time = new Date(punchTime.time);
-                  problem.incorrect_entry += " " + time.getHours().toString() + ":" + time.getMinutes().toString() + ":" + time.getMilliseconds().toString();
+                  problem.incorrect_entry += " " + time.getHours().toString() + ":" + time.getMinutes().toString() + ":" + time.getSeconds().toString();
                   
                   //send problem to database
                   Problem.save({issue: problem.issue, incorrect_entry: problem.incorrect_entry, correct_entry: problem.correct_entry}, function(success){
@@ -230,7 +230,7 @@ punchIn.controller('punchController', ['$scope', '$resource', '$location',
               });  
           }else{
               var time = new Date($scope.selected_incorrect_time);
-              problem.incorrect_entry += " " + time.getHours().toString() + ":" + time.getMinutes().toString() + ":" + time.getMilliseconds().toString();
+              problem.incorrect_entry += " " + time.getHours().toString() + ":" + time.getMinutes().toString() + ":" + time.getSeconds().toString();
               
               //send problem to database
               Problem.save({issue: problem.issue, incorrect_entry: problem.incorrect_entry, correct_entry: problem.correct_entry}, function(success){
@@ -254,11 +254,11 @@ punchIn.controller('punchController', ['$scope', '$resource', '$location',
       
       $scope.submit_note_req = function(){
           var problem = {};
-          problem.issue = 'request early punch in to be accepted';
+          problem.issue = 'is requesting an early punch in to be accepted';
           
           //gather date/time
           var time = new Date($scope.selected_incorrect_time);
-          problem.entry_in_db = time.getFullYear().toString() + "-" + (time.getMonth()+1).toString() + "-" + time.getDate().toString() + " " + time.getHours().toString() + ":" + time.getMinutes().toString() + ":" + time.getMilliseconds().toString();
+          problem.entry_in_db = time.getFullYear().toString() + "-" + (time.getMonth()+1).toString() + "-" + time.getDate().toString() + " " + time.getHours().toString() + ":" + time.getMinutes().toString() + ":" + time.getSeconds().toString();
           
           //correct start_time entry
           problem.start_time_punch = time.getFullYear().toString() + "-" + (time.getMonth()+1).toString() + "-" + time.getDate().toString() + " " + $scope.main.start_time;
@@ -282,7 +282,7 @@ punchIn.controller('punchController', ['$scope', '$resource', '$location',
           });
       };
       
-      $scope.v_times = ['0:15', '0:30', '0:45', '1:00', '1:15', '1:30', '1:45', '2:00', '2:15', '2:30', '2:45', '3:00', '3:15', '3:30', '3:45', '4:00', '4:15', '4:30', '4:45', '5:00', '5:15', '5:30', '5:45', '6:00', '6:15', '6:30', '6:45', '7:00', '7:15', '7:30', '7:45', '8:00'];
+      $scope.v_times = ['1:00', '2:00', '3:00', '4:00', '5:00', '6:00', '7:00', '8:00'];
       
       
       $scope.submit_vac_req = function(){
